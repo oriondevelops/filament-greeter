@@ -11,7 +11,7 @@ This Filament plugin is the sibling of [nova-greeter](https://github.com/orionde
 - Change avatar size
 - Disable avatar
 
-![example-daenerys](docs/example-daenerys.png)
+![example-daenerys](https://raw.githubusercontent.com/oriondevelops/filament-greeter/main/docs/example-daenerys.png)
 
 ## Installation
 
@@ -109,7 +109,7 @@ The greeting message will change to "Good morning", "Good afternoon", "Good even
 
 ## Examples
 
-![example-rand](docs/example-rand.png)
+![example-rand](https://raw.githubusercontent.com/oriondevelops/filament-greeter/main/docs/example-rand.png)
 
 ```
 GreeterPlugin::make()
@@ -132,7 +132,7 @@ GreeterPlugin::make()
     ),
 ```
 
-![example-annatar](docs/example-annatar.png)
+![example-annatar](https://raw.githubusercontent.com/oriondevelops/filament-greeter/main/docs/example-annatar.png)
 
 ```
 GreeterPlugin::make()
@@ -152,7 +152,7 @@ GreeterPlugin::make()
     ),
 ```
 
-![example-no-avatar](docs/example-no-avatar.png)
+![example-no-avatar](https://raw.githubusercontent.com/oriondevelops/filament-greeter/main/docs/example-no-avatar.png)
 
 ```
 GreeterPlugin::make()
