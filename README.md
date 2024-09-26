@@ -159,7 +159,7 @@ GreeterPlugin::make()
     ->avatar(enabled: false),
 ```
 
-![example-dayne](docs/example-dayne.png)
+![example-dayne](https://raw.githubusercontent.com/oriondevelops/filament-greeter/refs/heads/main/docs/example-dayne.png)
 
 ```
 GreeterPlugin::make()
