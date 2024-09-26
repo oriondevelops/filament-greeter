@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
+use Illuminate\Support\Carbon;
 
 class GreeterPlugin implements Plugin
 {
@@ -96,6 +97,25 @@ class GreeterPlugin implements Plugin
     public function message(string | Closure $text): static
     {
         $this->message = $text;
+
+        return $this;
+    }
+
+    public function timeSensitive(int $morningStart = 6, int $afternoonStart = 12, int $eveningStart = 17, int $nightStart = 22): static
+    {
+        $hour = Carbon::now()->hour;
+
+        // Cover the extreme case of a fantasy world where night start at 0 and morning start at 1
+        $nightStart = $nightStart === 0 ? 24 : $nightStart;
+
+        $key = match (true) {
+            $hour >= $nightStart || $hour < $morningStart => 'night',
+            $hour < $afternoonStart => 'morning',
+            $hour < $eveningStart => 'afternoon',
+            default => 'evening',
+        };
+
+        $this->message = fn () => __('greeter::widget.' . $key);
 
         return $this;
     }

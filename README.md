@@ -74,6 +74,14 @@ class AdminPanelProvider extends PanelProvider
 ->message(text: 'Welcome')
 ```
 
+**Time-Sensitive Greeting**
+
+```php
+->timeSensitive(morningStart: 6, afternoonStart: 12, eveningStart: 17, nightStart: 22)
+```
+
+The greeting message will change to "Good morning", "Good afternoon", "Good evening", or "Good night" based on the current time. You can omit the hour parameters to use the default times.
+
 **Title**
 
 ```php
@@ -149,6 +157,23 @@ GreeterPlugin::make()
 ```
 GreeterPlugin::make()
     ->avatar(enabled: false),
+```
+
+![example-dayne](docs/example-dayne.png)
+
+```
+GreeterPlugin::make()
+    ->timeSensitive()
+    ->name('Ser Arthur Dayne')
+    ->title('Sword of the Morning')
+    ->avatar(size: 'w-16 h-16')
+    ->columnSpan('full')
+    ->action(
+        Action::make('action')
+            ->label('Protect the Heir')
+            ->icon('heroicon-o-shield-check')
+            ->action(fn () => Notification::make()->title('You failed! You’ve been stabbed in the back.')->danger()->send())
+    ),
 ```
 
 ## Contributing
