@@ -74,6 +74,12 @@ class AdminPanelProvider extends PanelProvider
 ->message(text: 'Welcome')
 ```
 
+To determine the welcome message dynamically you can use a closure:
+
+```php
+ ->message(text: fn() => auth()->user()->hasRole('Super Administrator') ? __('Welcome my lord') : __('Welcome'))
+```
+
 **Time-Sensitive Greeting**
 
 ```php
@@ -86,6 +92,12 @@ The greeting message will change to "Good morning", "Good afternoon", "Good even
 
 ```php
 ->title(text: 'Administrator', enabled: true)
+```
+
+To change the title based on the user you can use a closure:
+
+```php
+->title(text: fn() => auth()->user()->title)
 ```
 
 **Avatar**
