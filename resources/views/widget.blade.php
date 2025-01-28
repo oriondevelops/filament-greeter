@@ -38,7 +38,7 @@
 
             @if($action instanceof \Filament\Actions\Action)
                 @if ($action->isVisible())
-                    {{ $action }}
+                    {{ $action->labeledFrom('sm') }}
                 @endif
             @else
                 <form
