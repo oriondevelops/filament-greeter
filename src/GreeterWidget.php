@@ -2,22 +2,32 @@
 
 namespace Orion\FilamentGreeter;
 
+use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Widgets\AccountWidget;
 
-class GreeterWidget extends AccountWidget implements HasActions, HasForms
+class GreeterWidget extends AccountWidget implements HasActions, HasSchemas
 {
     use InteractsWithActions;
-    use InteractsWithForms;
+    use InteractsWithSchemas;
 
-    protected static string $view = 'greeter::widget';
+    protected string $view = 'greeter::widget';
 
-    public function action()
+    protected ?Action $greeterAction = null;
+
+    public function booted(): void
     {
-        return GreeterPlugin::get()->getAction();
+        if (($action = GreeterPlugin::get()->getAction()) instanceof Action) {
+            $this->greeterAction = $this->cacheAction((clone $action)->labeledFrom('sm'));
+        }
+    }
+
+    public function getGreeterAction(): ?Action
+    {
+        return $this->greeterAction;
     }
 
     public static function canView(): bool

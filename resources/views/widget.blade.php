@@ -1,65 +1,72 @@
 @php
+    use Filament\Support\Icons\Heroicon;
+    use Filament\View\PanelsIconAlias;
+    use Illuminate\View\ComponentAttributeBag;
+
     $user = filament()->auth()->user();
     $plugin = filament('filament-greeter');
-    $name = $plugin->getName();
-    $title = $plugin->getTitle();
+    $name = $plugin->getName() ?? filament()->getUserName($user);
     $message = $plugin->getMessage();
     $avatarSize = $plugin->getAvatarSize();
-    $avatarUrl = $plugin->getAvatarUrl();
-    $action = $plugin->getAction();
+    $avatarStyle = match ($avatarSize) {
+        'xl' => 'width: 3.5rem; height: 3.5rem',
+        '2xl' => 'width: 4rem; height: 4rem',
+        default => null,
+    };
+    $action = $this->getGreeterAction();
 @endphp
 
 <x-filament-widgets::widget class="fi-account-widget">
     <x-filament::section>
-        <div class="flex items-center gap-x-3">
-            @if($plugin->shouldHaveAvatar())
-                <x-filament-panels::avatar.user
-                    :src="$avatarUrl ?? filament()->getUserAvatarUrl($user)"
-                    :size="$avatarSize"
-                    :user="$user"/>
-            @endif
+        @if ($plugin->shouldHaveAvatar())
+            <x-filament::avatar
+                :src="$plugin->getAvatarUrl() ?? filament()->getUserAvatarUrl($user)"
+                :alt="__('filament-panels::layout.avatar.alt', ['name' => $name])"
+                :size="$avatarStyle ? 'md' : $avatarSize"
+                :attributes="new ComponentAttributeBag(array_filter(['style' => $avatarStyle]))"
+                class="fi-user-avatar"
+                loading="lazy"
+            />
+        @endif
 
-            <div class="flex-1">
-                <h2 class="grid flex-1 text-base font-semibold leading-6 text-gray-950 dark:text-white">
-                    {{ $message ?? __('greeter::widget.message') }}
-                    @if($plugin->shouldHaveTitle())
-                        {{ $name ?? filament()->getUserName($user) }}
-                    @endif
-                </h2>
-
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                    @if($plugin->shouldHaveTitle())
-                        {{ $title }}
-                    @else
-                        {{ $name ?? filament()->getUserName($user) }}
-                    @endif
-                </p>
-            </div>
-
-            @if($action instanceof \Filament\Actions\Action)
-                @if ($action->isVisible())
-                    {{ $action->labeledFrom('sm') }}
+        <div class="fi-account-widget-main">
+            <h2 class="fi-account-widget-heading">
+                {{ $message ?? __('greeter::widget.message') }}
+                @if ($plugin->shouldHaveTitle())
+                    {{ $name }}
                 @endif
-            @else
-                <form
-                    action="{{ filament()->getLogoutUrl() }}"
-                    method="post"
-                    class="my-auto"
-                >
-                    @csrf
+            </h2>
 
-                    <x-filament::button
-                        color="gray"
-                        icon="heroicon-m-arrow-left-on-rectangle"
-                        icon-alias="panels::widgets.account.logout-button"
-                        labeled-from="sm"
-                        tag="button"
-                        type="submit"
-                    >
-                        {{ __('filament-panels::widgets/account-widget.actions.logout.label') }}
-                    </x-filament::button>
-                </form>
-            @endif
+            <p class="fi-account-widget-user-name">
+                {{ $plugin->shouldHaveTitle() ? $plugin->getTitle() : $name }}
+            </p>
         </div>
+
+        @if ($action)
+            @if ($action->isVisible())
+                {{ $action }}
+            @endif
+        @else
+            <form
+                action="{{ filament()->getLogoutUrl() }}"
+                method="post"
+                class="fi-account-widget-logout-form"
+            >
+                @csrf
+
+                <x-filament::button
+                    color="gray"
+                    :icon="Heroicon::ArrowLeftEndOnRectangle"
+                    :icon-alias="PanelsIconAlias::WIDGETS_ACCOUNT_LOGOUT_BUTTON"
+                    labeled-from="sm"
+                    tag="button"
+                    type="submit"
+                >
+                    {{ __('filament-panels::widgets/account-widget.actions.logout.label') }}
+                </x-filament::button>
+            </form>
+        @endif
     </x-filament::section>
+
+    <x-filament-actions::modals />
 </x-filament-widgets::widget>
