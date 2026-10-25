@@ -19,7 +19,7 @@ class GreeterPlugin implements Plugin
 
     protected ?int $sort = null;
 
-    protected int | string | array $columnSpan = '1/2';
+    protected int | string | array $columnSpan = 1;
 
     protected bool | Closure | null $hasAvatar = null;
 
@@ -63,7 +63,7 @@ class GreeterPlugin implements Plugin
         return $this;
     }
 
-    public function columnSpan(int | string | array $span = '1/2'): static
+    public function columnSpan(int | string | array $span = 1): static
     {
         $this->columnSpan = $span;
 

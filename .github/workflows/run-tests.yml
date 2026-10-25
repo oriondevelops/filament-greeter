@@ -1,0 +1,50 @@
+name: run-tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        filament: [4.*, 5.*]
+        target:
+          - { php: 8.2, laravel: 11.*, testbench: 9.*, stability: prefer-lowest }
+          - { php: 8.3, laravel: 12.*, testbench: 10.*, stability: prefer-stable }
+          - { php: 8.4, laravel: 12.*, testbench: 10.*, stability: prefer-stable }
+          - { php: 8.3, laravel: 13.*, testbench: 11.*, stability: prefer-lowest }
+          - { php: 8.4, laravel: 13.*, testbench: 11.*, stability: prefer-stable }
+          - { php: 8.5, laravel: 13.*, testbench: 11.*, stability: prefer-stable }
+
+    name: P${{ matrix.target.php }} - L${{ matrix.target.laravel }} - F${{ matrix.filament }} - ${{ matrix.target.stability }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.target.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, intl, fileinfo
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.target.laravel }}" "orchestra/testbench:${{ matrix.target.testbench }}" "filament/filament:${{ matrix.filament }}" --no-interaction --no-update
+          composer update --${{ matrix.target.stability }} --prefer-dist --no-interaction
+
+      - name: List installed versions
+        run: composer show | grep -E '^(filament/filament|livewire/livewire|laravel/framework) '
+
+      - name: Execute tests
+        run: vendor/bin/pest --ci

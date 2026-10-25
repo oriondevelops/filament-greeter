@@ -13,12 +13,25 @@ This Filament plugin is the sibling of [nova-greeter](https://github.com/orionde
 
 ![example-daenerys](https://raw.githubusercontent.com/oriondevelops/filament-greeter/main/docs/example-daenerys.png)
 
+## Version compatibility
+
+| Filament | Package |
+|----------|---------|
+| 4.x, 5.x | 1.x     |
+| 3.x      | 0.2.x   |
+
 ## Installation
 
 You can install the package via composer:
 
 ```bash
 composer require oriondevelops/filament-greeter
+```
+
+If you are still on Filament 3, stay on the 0.2.x line:
+
+```bash
+composer require oriondevelops/filament-greeter:^0.2
 ```
 
 ## Usage
@@ -51,7 +64,7 @@ class AdminPanelProvider extends PanelProvider
                     ->message('Welcome,')
                     ->name('Daenerys Targaryen')
                     ->title('The First of Her Name, the Unburnt, Queen of Meereen, Queen of the Andals and the Rhoynar and the First Men, Khalisee of the Great Grass Sea, Breaker of Chains and Mother of Dragons')
-                    ->avatar(size: 'w-16 h-16', url: 'https://avatarfiles.alphacoders.com/236/236674.jpg')
+                    ->avatar(size: '2xl', url: 'https://avatarfiles.alphacoders.com/236/236674.jpg')
                     ->action(
                         Action::make('action')
                             ->label('Buy more unsullied')
@@ -102,11 +115,13 @@ To change the title based on the user you can use a closure:
 
 **Avatar**
 
-[Setting up user avatars](https://filamentphp.com/docs/3.x/panels/users#setting-up-user-avatars)
+[Setting up user avatars](https://filamentphp.com/docs/5.x/users/overview#setting-up-user-avatars)
 
 ```php
 ->avatar(size: 'lg', enabled: true),
 ```
+
+Sizes are `sm`, `md`, `lg`, `xl` and `2xl`. Any other value is added as CSS classes, which Filament only renders if your custom theme compiles them.
 
 **Action**
 
@@ -155,7 +170,7 @@ GreeterPlugin::make()
     ->message('Welcome')
     ->name("Rand al'Thor")
     ->title("Dragon Reborn, Coramoor, Car'a'carn, He Who Comes With the Dawn, Shadowkiller, King of Illian, Lord of the Morning")
-    ->avatar(size: 'w-16 h-16')
+    ->avatar(size: '2xl')
     ->columnSpan('full')
     ->action(
         Action::make('action')
@@ -205,7 +220,7 @@ GreeterPlugin::make()
     ->timeSensitive()
     ->name('Ser Arthur Dayne')
     ->title('Sword of the Morning')
-    ->avatar(size: 'w-16 h-16')
+    ->avatar(size: '2xl')
     ->columnSpan('full')
     ->action(
         Action::make('action')
@@ -214,6 +229,13 @@ GreeterPlugin::make()
             ->action(fn () => Notification::make()->title('You failed! You’ve been stabbed in the back.')->danger()->send())
     ),
 ```
+
+## Upgrading from 0.2.x (Filament 3)
+
+1. Upgrade your app to Filament 4 or 5 first ([v4 upgrade guide](https://filamentphp.com/docs/4.x/upgrade-guide), [v5 upgrade guide](https://filamentphp.com/docs/5.x/upgrade-guide)).
+2. Require the new version: `composer require oriondevelops/filament-greeter:^1.0`.
+3. Replace Tailwind classes passed to `->avatar(size: ...)`, such as `'w-16 h-16'`, with `'xl'` or `'2xl'`. Filament 4+ no longer compiles classes used in plugin views.
+4. If you extend `GreeterWidget`, note that `$view` is no longer static and the custom action now comes from `getGreeterAction()` instead of `action()`.
 
 ## Contributing
 
