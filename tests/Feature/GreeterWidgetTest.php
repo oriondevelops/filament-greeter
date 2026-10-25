@@ -116,6 +116,13 @@ it('hides an invisible custom action', function () {
         ->assertDontSee('Hidden action');
 });
 
+it('spans one column by default', function () {
+    $this->usePanelWith(GreeterPlugin::make());
+
+    Livewire::test(GreeterWidget::class)
+        ->assertSeeHtml('span 1 / span 1;');
+});
+
 it('takes its visibility, sort and column span from the plugin', function () {
     $this->usePanelWith(
         GreeterPlugin::make()
