@@ -9,7 +9,7 @@ it('returns correct greeting based on hours', function (int $currentHour, string
     $plugin = GreeterPlugin::make()
         ->timeSensitive($morningStart, $afternoonStart, $eveningStart, $nightStart);
 
-    expect($plugin->getMessage())->toBe('greeter::widget.' . $expectedKey);
+    expect($plugin->getMessage())->toBe(__('greeter::widget.' . $expectedKey));
 })->with([
     // Default settings
     [5, 'night', 6, 12, 17, 22],
